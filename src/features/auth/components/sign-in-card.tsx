@@ -16,23 +16,22 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-
-const formSchema = z.object({
-  email: z.string().email('Invalid email address').min(5).max(255),
-  password: z.string().min(8).max(32),
-});
+import { loginSchema } from '@/features/auth/schemas';
+import { useLogin } from '@/features/auth/api/use-login';
 
 export const SignInCard = () => {
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const { mutate } = useLogin();
+  const form = useForm<z.infer<typeof loginSchema>>({
+    resolver: zodResolver(loginSchema),
     defaultValues: {
       email: '',
       password: '',
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  function onSubmit(values: z.infer<typeof loginSchema>) {
     console.log(values);
+    mutate({ json: values });
   }
   return (
     <Card className="w-full h-full md:w-[487px] border-none shadow-none">
